@@ -1,7 +1,7 @@
 import streamlit as st 
 from langchain.llms import OpenAI
 
-st.title("Quickstart Test Automation App")
+st.title("My_STAR AI assistant")
          
 openai_api_key = st.sidebar.text_input('OpenAI API Key')
 
