@@ -1,36 +1,20 @@
 import os
-import subprocess
+import openai
 
-def git_push = '/Users/abdeabd/Desktop/AI'
+# Directory containing the files
+directory_path = '~/documents'
 
+# List all files in the directory
+all_file_names = [os.path.join(directory_path, f) for f in os.listdir(directory_path) if os.path.isfile(os.path.join(directory_path, f))]
 
+# Initialize OpenAI client (ensure you have set your API key)
+client = openai.OpenAI(api_key="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")
 
-(folder_path, commit_message, remote_name='origin', branch_name='main'):
-    """
-    Pushes the given folder to the specified remote and branch on GitHub.
-    
-    :param folder_path: The path to the folder to push.
-    :param commit_message: The commit message to use.
-    :param remote_name: The name of the remote. Default is 'origin'.
-    :param branch_name: The name of the branch. Default is 'main'.
-    """
-    # Navigate to the folder
-    os.chdir(folder_path)
-    
-    # Initialize Git if not already done
-    if not os.path.exists(os.path.join(folder_path, '.git')):
-        subprocess.run(['git', 'init'], check=True)
-    
-    # Add all files in the folder to the staging area
-    subprocess.run(['git', 'add', '.'], check=True)
-    
-    # Commit the changes
-    subprocess.run(['git', 'commit', '-m', commit_message], check=True)
-    
-    # Push the changes to the remote repository
-    subprocess.run(['git', 'push', remote_name, branch_name], check=True)
+# Upload files and collect file IDs
+file_ids = []
+for file_name in all_file_names:
+    with open(file_name, 'rb') as file:
+        response = client.files.create(file=file, purpose='assistants')
+        file_ids.append(response.id)  # Access the id attribute
 
-# Example usage:
-folder_to_push = '/path/to/your/folder'  # Replace with your folder path
-commit_msg = 'Initial commit with my AI project folders'
-git_push(folder_to_push, commit_msg)
+# Now file_ids contains the IDs of all uploaded files
